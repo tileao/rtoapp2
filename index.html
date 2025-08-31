@@ -1,0 +1,123 @@
+
+<!doctype html>
+<html lang="pt-br">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<link rel="manifest" href="manifest.json">
+<link rel="stylesheet" href="styles.css">
+<title>AW139 – RTO & DropDown</title>
+<body>
+<div class="container">
+  <div class="sticky">
+    <div class="card">
+      <h1>AW139 — RTO & DropDown</h1>
+      <div class="result" id="result">–</div>
+      <div class="small" id="unit">Selecione modo e insira os dados</div>
+      <div class="small" id="note"></div>
+    </div>
+  </div>
+
+  <!-- BLOCO 1: Básicos (ordem: GW, OAT, ALT, Vento, WRA) -->
+  <div class="card">
+    <div class="row">
+      <div class="col"><label>GW <span class="unit">[kg]</span></label><input id="gw" type="number" value="6500" inputmode="decimal" enterkeyhint="next" data-autoselect="1"></div>
+      <div class="col"><label>OAT <span class="unit">[°C]</span></label><input id="oat" type="number" value="25" inputmode="decimal" enterkeyhint="next" data-autoselect="1"></div>
+      <div class="col">
+        <label>Altitude (Auto/Manual)</label>
+        <div class="segment" id="altSeg">
+          <button id="altAuto" class="active" data-mode="auto">Auto</button>
+          <button id="altManual" data-mode="manual">Manual</button>
+        </div>
+      </div>
+    </div>
+    <div class="row" id="altAutoRow">
+      <div class="col"><label>QNH <span class="unit">[hPa]</span></label><input id="qnh" type="number" value="1013" inputmode="decimal" enterkeyhint="next" data-autoselect="1"></div>
+      <div class="col"><label>Elevação <span class="unit">[ft]</span></label><input id="elev" type="number" value="0" inputmode="decimal" enterkeyhint="next" data-autoselect="1"></div>
+    </div>
+    <div class="row" id="altManualRow" style="display:none">
+      <div class="col"><label>Alt Pressão (manual) <span class="unit">[ft]</span></label><input id="altManualInput" type="number" value="0" inputmode="decimal" enterkeyhint="next" data-autoselect="1"></div>
+    </div>
+
+    <div class="row">
+      <div class="col"><label>Vento <span class="unit">[kt]</span></label><input id="wind" type="number" value="0" inputmode="decimal" enterkeyhint="next" data-autoselect="1"></div>
+      <div class="col"><label>WRA <span class="unit">[°]</span></label><input id="wra" type="number" value="0" inputmode="decimal" enterkeyhint="next" data-autoselect="1"></div>
+    </div>
+
+    <input id="alt" type="hidden" value="0">
+  </div>
+
+  <!-- BLOCO 2: Condições / Toggles -->
+  <div class="card">
+    <div class="row">
+      <div class="col">
+        <label>Modo</label>
+        <select id="mode">
+          <option value="conv">DropDown – Convencional</option>
+          <option value="enh">DropDown – Enhanced</option>
+          <option value="rto" selected>RTO (Clear Area)</option>
+        </select>
+      </div>
+      
+      </div>
+      <div class="col">
+        <label>Descendente (+15 ft Conv.)</label>
+        <label class="tgl">
+          <input id="descToggle" type="checkbox" checked>
+          <span class="trk"><span class="thm"></span></span>
+          <span class="lbl">Descendente</span>
+        </label>
+      </div>
+      <div class="col">
+        <label>Filtro (RTO)</label>
+        <select id="filter">
+          <option value="0">Nenhum</option>
+          <option value="110">EAPS OFF (+110 m)</option>
+          <option value="170">IBF (+170 m)</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="switch">
+      <div class="chip">Bilinear ALT×OAT</div>
+      <div class="chip">Head/Crosswind</div>
+      <div class="chip">QNH→Alt Pressão</div>
+      <div class="chip">Offline</div>
+    </div>
+  </div>
+</div>
+
+<!-- Barra inferior -->
+<div class="sticky-bottom">
+  <div class="row">
+    <button class="btn secondary" id="clearBtn">Limpar tudo</button>
+    <button class="btn secondary" id="exportBtn">Exportar db.json</button>
+    <label class="btn secondary" for="fileInput">Importar</label>
+    <input id="fileInput" type="file" accept="application/json" style="display:none">
+    <button class="btn secondary" id="updateCacheBtn">Atualizar cache</button>
+    <button class="btn" id="calcBtn">Calcular</button>
+  </div>
+</div>
+
+<script src="engine.js"></script>
+<script> if("serviceWorker" in navigator) navigator.serviceWorker.register("./sw.v26noed.js"); </script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+  // Esconde painéis de edição de tabela/malha
+  document.querySelectorAll('.card').forEach(function(c){
+    var t = (c.textContent||'').trim();
+    if (t.includes('Tabelas (toque p/ editar)') ||
+        t.includes('Malha Altitude') ||
+        t.includes('Malha Altitude × OAT') ||
+        t.includes('Curva por Peso')) {
+      c.style.display = 'none';
+    }
+  });
+});
+</script>
+
+</body>
+</html>
